@@ -103,7 +103,6 @@ public class R2dbcPostgresqlTest {
             .flatMap(result -> Mono.from(result.getRowsUpdated()))
             .doFinally(signalType -> con.close())).block();
 
-
         // insert sample data: 100 row
         UUID targetMailboxId = UUID.fromString("018ecb78-7627-7c44-88b5-7f4ec96c757f");
 
@@ -115,10 +114,7 @@ public class R2dbcPostgresqlTest {
         connectionMono.flatMapMany(connection -> Flux.range(1, 100)
                 .flatMap(index -> {
                     UUID messageId = messageUids.get(index - 1);
-
                     LocalDateTime internalDate = LocalDateTime.now();
-
-                    // Chèn dữ liệu vào bảng message
                     return Mono.from(connection.createStatement(
                             "INSERT INTO message " +
                                 "(message_id, body_blob_id, mime_type, mime_subtype, internal_date) " +
@@ -139,8 +135,6 @@ public class R2dbcPostgresqlTest {
                     long messageUid = index;
                     UUID messageId = messageUids.get(index - 1);
                     LocalDateTime saveDate = LocalDateTime.now();
-
-                    // Chèn dữ liệu vào bảng message
                     return Mono.from(connection.createStatement(
                             "INSERT INTO message_mailbox (mailbox_id, message_uid, message_id, save_date) " +
                                 "VALUES ($1, $2, $3, $4)")
